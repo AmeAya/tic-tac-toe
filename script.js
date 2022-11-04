@@ -2,24 +2,39 @@ let cells = document.querySelectorAll('#field td')
 start(cells)
 
 function start(cells) {
-    let turn = 0
+    let turn = 0;
+    let isGameOn = true;
     for (let cell of cells) { // for cell in cells
         cell.addEventListener('click', function press() {
-            if (turn % 2 === 0) {
+            if (turn % 2 === 0 && isGameOn) {
                 this.textContent = 'X';
                 this.removeEventListener('click', press);
+                turn++;
+                if (isVictory(cells)) {
+                    alert('First Player Win!');
+                    isGameOn = false;
+                }
             }
             else {
-                this.textContent = 'O';
-                this.removeEventListener('click', press);
+                if (isGameOn) {
+                    this.textContent = 'O';
+                    this.removeEventListener('click', press);
+                    turn++;
+                    if (isVictory(cells)) {
+                        alert('Second Player Win!');
+                        isGameOn = false;
+                    }
+                }
             }
-            turn++;
+            if (turn === 8) {
+                alert('Draw!');
+            }
         })
     }
 }
 
 function isVictory(cells) {
-    let combinations = [
+    let combo = [
         [0, 1, 2],
         [3, 4, 5],
         [6, 7, 8],
@@ -30,5 +45,15 @@ function isVictory(cells) {
         [2, 4, 6]
     ];
 
+    for (let i = 0; i < 9; i++) {
+        if (
+            cells[combo[i][0]].textContent === cells[combo[i][1]].textContent &&
+            cells[combo[i][1]].textContent === cells[combo[i][2]].textContent &&
+            cells[combo[i][0]].textContent !== ''
+        ) {
+            return true;
+        }
+    }
 
+    return false;
 }
